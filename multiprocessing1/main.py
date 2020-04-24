@@ -1,3 +1,7 @@
+"""
+Example using Python multiprocessing module.
+"""
+
 import collections
 import multiprocessing
 import time
@@ -5,11 +9,13 @@ import os
 import random
 from pprint import pprint
 
+# Create a named tuple to contain the data
 part = collections.namedtuple('part',
                               ['part',
                                'cost',
                                'quant'])
 
+# Create a tuple of part tuples
 parts = (
     part('a12-56', 1.25, 1),
     part('a23-44', 1.15, 1),
@@ -20,7 +26,7 @@ parts = (
 )
 
 
-def calculate_cost(item: part):
+def calculate_cost(item: part) -> float:
     delay = float(random.randrange(1, 10)) / 10.0
     print(f'Process {os.getpid()} sleeps {delay}s...')
     time.sleep(delay)
@@ -34,7 +40,7 @@ result = pool.map(calculate_cost, parts)
 
 total = 0
 
-for item, cost in zip(parts, result):
+for it, cost in zip(parts, result):
     total += cost
 
 print(f'Total cost {total}')
