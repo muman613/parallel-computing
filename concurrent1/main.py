@@ -1,15 +1,13 @@
 """
-Example using Python multiprocessing module.
+Example using Python concurrent.futures module.
 """
 
 import collections
 import concurrent.futures
 import time
-import os
 import random
 import argparse
-import csv
-from pprint import pprint
+from modules import datasets
 
 # Create a named tuple to contain the data
 part = collections.namedtuple('part',
@@ -25,31 +23,6 @@ def calculate_cost(item: part) -> float:
     return item.cost * item.quant
 
 
-def load_dataset(filename:str) -> tuple:
-    """
-    Load data from CSV file into tuple of tuples
-
-    :param filename:
-    :return:
-    """
-    # print(f'load_dataset({filename})')
-    parts = []
-    if os.path.exists(filename):
-        with open(filename, newline='') as csvfile:
-            dataset_reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
-            for row in dataset_reader:
-                pn,pc,pq = row
-                parts.append(part(part=pn,
-                                  cost=pc,
-                                  quant=pq))
-
-        print(f'Loaded {len(parts)} points of data...')
-    else:
-        print(f'Dataset file {filename} not found.')
-
-    return tuple(parts)
-
-
 def main():
     # Parse user arguments
     parser = argparse.ArgumentParser(description='First example multiprocessing')
@@ -58,7 +31,7 @@ def main():
 
     parts = () # A tuple of namedtuples
     if options.dataset:
-        parts = load_dataset(options.dataset)
+        parts = datasets.load_dataset(options.dataset)
     else:
         parts = (
             part(part='a12-56', cost=1.25, quant=1),
